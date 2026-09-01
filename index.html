@@ -120,6 +120,18 @@
             gap: 12px;
         }
 
+        .option-text {
+            flex-grow: 1;
+        }
+
+        .option-logo {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
         .option-item:hover {
             border-color: var(--primary-color);
             background-color: #f8fafc;
@@ -450,11 +462,17 @@
             marker.textContent = String.fromCharCode(65 + idx); // A, B, C
             
             const textSpan = document.createElement('span');
+            textSpan.className = 'option-text';
             textSpan.textContent = option;
-            textSpan.style.flexGrow = '1';
+
+            const logo = document.createElement('img');
+            logo.className = 'option-logo';
+            logo.src = 'https://infostart.ru/bitrix/templates/sandbox_empty/assets/tpl/abo/img/logo.svg';
+            logo.alt = 'Infostart';
             
             li.appendChild(marker);
             li.appendChild(textSpan);
+            li.appendChild(logo);
             
             li.addEventListener('click', () => selectAnswer(idx));
             optionsListEl.appendChild(li);
