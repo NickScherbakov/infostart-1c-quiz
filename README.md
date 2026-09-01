@@ -17,19 +17,18 @@
 1. Создайте пустой публичный репозиторий на GitHub.
 2. Откройте терминал в этой папке и выполните:
 
-  git remote add origin https://github.com/USERNAME/REPO.git
+  git remote add origin https://github.com/NickScherbakov/infostart-1c-quiz.git
   git push -u origin main
 
 3. В GitHub включите Pages:
   Settings -> Pages -> Deploy from a branch -> main -> /(root)
 4. Дождитесь публикации по адресу:
-  https://USERNAME.github.io/REPO/
+  https://nickscherbakov.github.io/infostart-1c-quiz/
 
 ## Вставка в статью на Infostart
 
 1. Откройте файл article-code.html.
-2. Замените USERNAME и REPO на реальные значения.
-3. В редакторе статьи нажмите Source и вставьте содержимое файла.
+2. В редакторе статьи нажмите Source и вставьте содержимое файла.
 
 ## Соответствие правилам публикации
 
