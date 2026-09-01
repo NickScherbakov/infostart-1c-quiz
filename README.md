@@ -1,4 +1,4 @@
-[![Infostart](https://infostart.ru/bitrix/templates/sandbox_empty/assets/tpl/abo/img/logo.svg)](https://infostart.ru/public/REPLACE_WITH_ARTICLE_ID)
+[![Infostart](https://infostart.ru/bitrix/templates/sandbox_empty/assets/tpl/abo/img/logo.svg)](https://infostart.ru/public/2778482/)
 
 # 1C Quiz Advanced v2
 
