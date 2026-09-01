@@ -1,59 +1,126 @@
 <div style="max-width:860px;margin:18px auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:#24292e;font-size:16px;">
   <div style="background:#f6f8fa;border-left:5px solid #0366d6;padding:16px 20px;margin-bottom:24px;border-radius:0 6px 6px 0;">
-    <h2 style="margin:0 0 10px 0;color:#0366d6;font-size:22px;border:none;padding:0;line-height:1.25;">Практика через викторину: Linux/SRE/DevOps для 1C</h2>
+    <h2 style="margin:0 0 10px 0;color:#0366d6;font-size:22px;border:none;padding:0;line-height:1.25;">Инженерная викторина: Linux, SRE и DevOps в экосистеме 1С</h2>
     <p style="font-size:15px;color:#444d56;margin:0 0 8px 0;font-weight:500;">
-      Материал оформлен как короткий инженерный тренажер. Сначала пройдите тест, затем используйте
-      разбор как чек-лист для ревизии своих CI/CD, контейнеров и кластера 1C.
+      Короткий практический тест для тех, кто собирает, сопровождает и стабилизирует контуры 1С на Linux: от CI/CD и контейнеризации до диагностики памяти rphost и поведения кластера под нагрузкой.
     </p>
     <p style="font-size:13px;color:#586069;margin:0;">
-      <strong>10 вопросов по памяти rphost, Docker-лицензированию, CI/CD и диагностике кластера 1C с быстрым инженерным разбором после каждого ответа</strong>
+      <strong>10 вопросов с разбором после каждого ответа: False Success, лицензирование, swap, временное хранилище, stale-процессы и мультиязычные логи</strong>
     </p>
   </div>
 
-  <div style="background:#ffffff;border:1px solid #e1e4e8;border-radius:6px;padding:14px 18px;margin:20px 0;">
-    <strong style="display:block;margin-bottom:8px;color:#24292e;font-size:14px;">Что проверяет викторина:</strong>
+  <p style="margin:0 0 14px 0;">
+    Эксплуатация серверов «1С:Предприятие» в среде Linux давно перестала быть экспериментом. На практике именно здесь особенно быстро проявляются архитектурные нюансы платформы: неочевидные ограничения headless-сборки, чувствительность к кодировкам логов, тонкости лицензирования в контейнерах и особенности расчета памяти рабочих процессов.
+  </p>
+  <p style="margin:0 0 14px 0;">
+    Эта викторина нужна не как развлечение, а как компактная инженерная самопроверка. Она помогает быстро понять, насколько уверенно команда ориентируется в типовых аварийных сценариях и скрытых рисках, которые обычно всплывают уже на боевом контуре.
+  </p>
+
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:14px;color:#1b1f23;">Для кого эта викторина</h2>
+  <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:13.5px;">
+    <thead>
+      <tr style="background-color:#f6f8fa;">
+        <th style="border:1px solid #dcdfe6;padding:10px 12px;width:28%;text-align:left;color:#1f2328;">Роль</th>
+        <th style="border:1px solid #dcdfe6;padding:10px 12px;width:72%;text-align:left;color:#1f2328;">Какие компетенции затрагиваются</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;"><strong style="color:#0366d6;">Системные администраторы 1С</strong></td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;">Поведение ragent, rmngr и rphost на Linux, лимиты памяти, аварийные завершения, ротация процессов и влияние системных настроек ОС на стабильность кластера.</td>
+      </tr>
+      <tr style="background-color:#fcfcfc;">
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;"><strong style="color:#0366d6;">DevOps и SRE-инженеры</strong></td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;">Надежная сборка 1С в CI/CD, контроль ложного успеха, изоляция раннеров, работа с логами разных кодировок и безопасная эксплуатация контейнеров с лицензиями.</td>
+      </tr>
+      <tr>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;"><strong style="color:#0366d6;">Техлиды и ведущие разработчики</strong></td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;vertical-align:top;">Связь прикладного кода и инфраструктурных последствий: временное хранилище, повторно используемые значения, серверные вызовы, утечки памяти и перегрев рабочих процессов.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:14px;color:#1b1f23;">Что вы проверите на практике</h2>
+  <div style="background:#ffffff;border:1px solid #e1e4e8;border-radius:6px;padding:14px 18px;margin:16px 0;">
     <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:14px;color:#24292e;">
-      <li style="margin:0 0 6px 0;">Контроль памяти rphost под Linux (vmRSS + vmSwap).</li>
-      <li style="margin:0 0 6px 0;">Причины отсутствия mdmp при аварийном завершении.</li>
-      <li style="margin:0 0 6px 0;">Риски Docker bridge для программных лицензий 1C.</li>
-      <li style="margin:0 0 6px 0;">Почему ring/ibcmd не собирают .cfe без базы.</li>
-      <li style="margin:0 0 6px 0;">Ложный success в пайплайнах из-за кодировок логов.</li>
-      <li style="margin:0 0 6px 0;">Нулевой лог как скрытый признак падения до старта ядра.</li>
-      <li style="margin:0 0 6px 0;">Утечки памяти в HTTP-сервисах через временное хранилище.</li>
-      <li style="margin:0 0 6px 0;">Cache stampede после сброса повторно используемых значений.</li>
-      <li style="margin:0 0 6px 0;">Консолидация и миграция сеансов из stale-процессов.</li>
-      <li style="margin:0;">Надежные regex-шаблоны поиска ошибок в мультиязычных логах.</li>
+      <li><strong>Сборка и инструменты:</strong> почему <code>ring</code> и <code>ibcmd</code> не заменяют полноценный путь сборки расширений без промежуточной базы.</li>
+      <li><strong>Ложный успех в CI/CD:</strong> как пустой лог, UTF-16LE и узкий regex приводят к зеленому пайплайну при фактической ошибке сборки.</li>
+      <li><strong>Лицензирование в Docker:</strong> почему для программных лицензий критичен сетевой режим и как сетевой интерфейс влияет на привязку <code>*.lic</code>.</li>
+      <li><strong>Память rphost:</strong> как платформа трактует RSS и swap под Linux и почему визуально «освободившаяся» память не всегда означает нормальное состояние процесса.</li>
+      <li><strong>Поведение серверных сеансов:</strong> как временное хранилище и пулы HTTP-сервисов могут провоцировать долговременное удержание данных в памяти.</li>
+      <li><strong>Эксплуатационные сценарии:</strong> что происходит при консолидации stale-процессов и почему неосторожный сброс кэша способен вызвать эффект stampede.</li>
     </ul>
   </div>
 
-  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:10px;color:#1b1f23;">Интерактивная часть</h2>
-  <p style="margin:0 0 12px 0;">Ответьте на 10 вопросов. После каждого ответа показывается комментарий с практическим содержанием.</p>
+  <div style="background-color:#f1f8ff;border:1px solid #c8e1ff;border-left:4px solid #0366d6;border-radius:0 6px 6px 0;padding:12px 16px;margin:18px 0;">
+    <p style="margin:0 0 6px 0;font-weight:600;color:#0366d6;">Как проходить тест и читать результат</p>
+    <p style="margin:0;font-size:13.5px;color:#24292e;">
+      Вопросы специально сформулированы так, чтобы проверять не терминологию, а инженерную логику. После каждого ответа сразу показывается короткий разбор, поэтому тест можно использовать и как экспресс-обучение, и как чек-лист для обсуждения внутри команды.
+    </p>
+  </div>
 
-  <div style="max-width:760px;margin:0 auto 10px auto;">
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:14px;color:#1b1f23;">Интерактивная часть</h2>
+  <p style="margin:0 0 12px 0;">
+    Ответьте на 10 вопросов. На выходе вы получите мгновенный результат и сможете сразу увидеть, какие темы требуют повторной ревизии в вашей инфраструктуре.
+  </p>
+
+  <div style="background:#ffffff;border:1px solid #e1e4e8;border-radius:6px;padding:6px;margin:20px 0;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
     <iframe
       src="https://nickscherbakov.github.io/infostart-1c-quiz/index.html?v=20260901"
-      style="width:100%;height:760px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;"
+      style="width:100%;height:760px;border:none;border-radius:4px;display:block;background:#f8fafc;"
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
+      title="Интерактивная викторина по Linux, SRE и DevOps в экосистеме 1С"
       allowfullscreen>
     </iframe>
   </div>
 
-  <p style="text-align:center;margin:0 0 18px 0;font-size:14px;color:#586069;">
-    Если тест не отображается, откройте отдельно:
-    <a href="https://nickscherbakov.github.io/infostart-1c-quiz/index.html?v=20260901" target="_blank" rel="noopener" style="color:#0366d6;text-decoration:none;">Открыть тест</a>
+  <div style="background-color:#fffbdd;border:1px solid #d9d099;border-left:4px solid #e36209;border-radius:0 6px 6px 0;padding:12px 16px;margin:16px 0;">
+    <strong style="color:#9e4100;">Если фрейм не загрузился:</strong>
+    <span style="color:#24292e;"> откройте тест напрямую в новой вкладке. Такое поведение возможно из-за ограничений браузера, корпоративного прокси или политики встраивания внешних страниц.</span>
+    <a href="https://nickscherbakov.github.io/infostart-1c-quiz/index.html?v=20260901" target="_blank" rel="noopener" style="color:#0366d6;font-weight:600;text-decoration:underline;margin-left:4px;">Открыть тест на GitHub Pages ↗</a>
+  </div>
+
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:14px;color:#1b1f23;">Практический минимум после прохождения</h2>
+  <p style="margin:0 0 14px 0;">
+    Независимо от результата теста полезно пройтись по базовому аудиту своего контура. Ниже — короткий список проверок, которые чаще всего дают быструю отдачу.
   </p>
 
-  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:10px;color:#1b1f23;">Практический минимум после прохождения</h2>
-  <ol style="margin:0 0 14px 20px;padding-left:20px;line-height:1.8;font-size:14px;color:#24292e;">
-    <li style="margin:0 0 8px 0;">Проверьте лимиты памяти rphost и интерпретацию vmSwap в мониторинге.</li>
-    <li style="margin:0 0 8px 0;">Добавьте в CI проверку размера лога и нормализацию кодировки перед grep.</li>
-    <li style="margin:0 0 8px 0;">Для контейнеров с программными лицензиями применяйте сетевой режим host.</li>
-    <li style="margin:0;">Закрепите единый regex-словарь ошибок для RU/EN окружений.</li>
-  </ol>
+  <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:13.5px;">
+    <thead>
+      <tr style="background-color:#f6f8fa;">
+        <th style="border:1px solid #dcdfe6;padding:10px 12px;width:25%;text-align:left;color:#1f2328;">Область</th>
+        <th style="border:1px solid #dcdfe6;padding:10px 12px;width:35%;text-align:left;color:#1f2328;">Что часто идет не так</th>
+        <th style="border:1px solid #dcdfe6;padding:10px 12px;width:40%;text-align:left;color:#1f2328;">Что стоит проверить</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;font-weight:600;">CI/CD и логи</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Поиск только слова «Ошибка» и доверие к exit code без анализа физического содержимого отчета.</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Нормализация кодировки, контроль размера лог-файла, мультиязычный regex и явная обработка сценариев падения до старта ядра.</td>
+      </tr>
+      <tr style="background-color:#fcfcfc;">
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;font-weight:600;">Контейнеры и лицензии</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Стандартный bridge-режим для контейнеров с программной лицензией и отсутствие контроля лицензионной привязки.</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Проверка сетевого режима, стабильности идентификаторов окружения и корректности доступа к каталогу лицензий.</td>
+      </tr>
+      <tr>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;font-weight:600;">Память процессов</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Оценка состояния rphost только по RSS без учета swap и без понимания условий мягкой или жесткой ротации.</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Сопоставление лимитов платформы, системного мониторинга и реального поведения процессов при долговременной нагрузке.</td>
+      </tr>
+      <tr style="background-color:#fcfcfc;">
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;font-weight:600;">BSL и серверная логика</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Бесконтрольное использование временного хранилища, тяжелые повторные пересчеты и агрессивный сброс повторно используемых значений.</td>
+        <td style="border:1px solid #dcdfe6;padding:10px 12px;">Ревизия серверных методов, сценариев фоновой обработки и мест, где память может удерживаться дольше жизненного цикла запроса.</td>
+      </tr>
+    </tbody>
+  </table>
 
   <div style="background-color:#f1f8ff;border:1px solid #c8e1ff;border-left:4px solid #0366d6;border-radius:0 6px 6px 0;padding:12px 16px;margin:16px 0 0 0;">
-    <p style="margin:0 0 6px 0;"><strong>Исходники и публикация:</strong></p>
-    <p style="margin:0;">Страница теста и шаблон для Infostart опубликованы в <a href="https://github.com/NickScherbakov/infostart-1c-quiz" target="_blank" rel="noopener" style="color:#0366d6;text-decoration:none;">GitHub-репозитории</a>.</p>
+    <p style="margin:0 0 6px 0;"><strong>Исходный код и публикация:</strong></p>
+    <p style="margin:0 0 10px 0;">Страница теста и шаблон для Infostart опубликованы в <a href="https://github.com/NickScherbakov/infostart-1c-quiz" target="_blank" rel="noopener" style="color:#0366d6;text-decoration:none;">GitHub-репозитории</a>.</p>
+    <p style="margin:0;font-size:13px;color:#586069;">Если захотите добавить новый вопрос, уточнить формулировку или расширить тематику по Linux/PostgreSQL/1С, репозиторий уже готов для дальнейшего развития.</p>
   </div>
 </div>
