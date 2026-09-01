@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRE & DevOps в экосистеме 1С: Битва за 99.9%</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --muted-text: #475569;
+            --border-color: #e2e8f0;
+            --correct-color: #10b981;
+            --wrong-color: #ef4444;
+            --code-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.025);
+            width: 100%;
+            max-width: 720px;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted-text);
+            margin-bottom: 30px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .progress-bar {
+            background-color: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted-text);
+            min-width: 45px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-color);
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-color);
+            background-color: #f8fafc;
+        }
+
+        .option-marker {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 22px;
+            height: 22px;
+            background-color: var(--code-bg);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted-text);
+            border: 1px solid var(--border-color);
+        }
+
+        .option-item:hover .option-marker {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .option-item.correct {
+            background-color: #f0fdf4;
+            border-color: var(--correct-color);
+            color: #166534;
+        }
+
+        .option-item.correct .option-marker {
+            background-color: var(--correct-color);
+            border-color: var(--correct-color);
+            color: white;
+        }
+
+        .option-item.wrong {
+            background-color: #fef2f2;
+            border-color: var(--wrong-color);
+            color: #991b1b;
+        }
+
+        .option-item.wrong .option-marker {
+            background-color: var(--wrong-color);
+            border-color: var(--wrong-color);
+            color: white;
+        }
+
+        .option-item.disabled {
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .feedback-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 15px;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background-color: #f0fdf4;
+            color: #166534;
+            border-left: 4px solid var(--correct-color);
+            border-top: 1px solid #bbf7d0;
+            border-right: 1px solid #bbf7d0;
+            border-bottom: 1px solid #bbf7d0;
+        }
+
+        .feedback-box.wrong {
+            display: block;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid var(--wrong-color);
+            border-top: 1px solid #fecaca;
+            border-right: 1px solid #fecaca;
+            border-bottom: 1px solid #fecaca;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-weight: normal;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding-top: 10px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            margin-top: 25px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: #f0fdf4;
+            border: 4px solid var(--correct-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            font-size: 32px;
+            font-weight: 800;
+            color: #166534;
+        }
+
+        .comment-box {
+            font-size: 15px;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--code-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            text-align: left;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="quiz-screen">
+        <h1>SRE & DevOps в экосистеме 1С: Битва за 99.9%</h1>
+        <div class="subtitle">Интерактивный хардкор-тест на знание Linux-инфраструктуры, Docker и контроля памяти</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div id="progress-text" class="progress-text">0 / 0</div>
+        </div>
+        <div class="question-box">
+            <div id="question-text" class="question-text">Загрузка сложнейшего вопроса...</div>
+            <ul id="options-list" class="options-list"></ul>
+        </div>
+        <div id="feedback-box" class="feedback-box"></div>
+        <button id="next-btn" class="btn" style="display: none;">Следующий вопрос</button>
+    </div>
+
+    <div id="result-screen" class="result-screen">
+        <h1>Инженерное испытание завершено!</h1>
+        <div class="score-circle" id="score-circle">0 / 0</div>
+        <div id="result-comment" class="comment-box"></div>
+        <button id="restart-btn" class="btn">Пройти испытание заново</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "Как именно платформа 1С на операционной системе Linux рассчитывает потребление памяти процессом rphost для контроля лимитов?",
+            options: [
+                "Исключительно по показателю vmRSS (физический резидент в RAM), полностью игнорируя дисковый своп.",
+                "Как сумму vmRSS (резидентная память) и vmSwap (вытесненная в своп память процесса).",
+                "По виртуальному размеру выделения PagefileUsage (аналогично механизмам под Windows)."
+            ],
+            correct: 1,
+            explanation: "Под Linux 1С честно складывает vmRSS и vmSwap. Если ОС вытеснила неактивные страницы процесса в своп, его Working Set/RSS упадет, создавая ложное впечатление освобождения памяти, но для платформы лимит останется превышенным. Администраторы часто смотрят на физическую память в htop и не понимают, почему rphost уходит в ротацию."
+        },
+        {
+            question: "Почему при аварийном завершении rphost из-за превышения 'Критического объема памяти' в каталоге не создаются дампы .mdmp, хотя сбор дампов в logcfg.xml настроен корректно?",
+            options: [
+                "При превышении критического лимита процесс принудительно убивается ОС снаружи по команде менеджера кластера, и внутренние обработчики logcfg.xml просто не успевают отработать.",
+                "Дампы на Linux пишутся только в формате core-dump ядра системы, платформа 1С в принципе не генерирует файлы .mdmp под Linux.",
+                "Потому что запись дампа блокируется отсутствием прав у пользователя usr1cv8 на запись в системную директорию /var/log/."
+            ],
+            correct: 0,
+            explanation: "При критическом лимите процесс завершается аварийно снаружи по SIGKILL. Внутренние механизмы logcfg.xml бессильны. Для получения дампа в этом сценарии необходимо взвести флаг 'Записывать дамп процесса при превышении критического объема памяти' в свойствах рабочего сервера в консоли."
+        },
+        {
+            question: "В чем заключается главная опасность запуска Docker-контейнера с сервером 1С и программными лицензиями (*.lic) в стандартном режиме сети bridge?",
+            options: [
+                "Лицензии *.lic требуют монопольного доступа к TCP-порту 475, который заблокирован в режиме bridge.",
+                "В режиме bridge генерируется новый виртуальный сетевой интерфейс со случайным MAC-адресом, что мгновенно инвалидирует привязку программной лицензии к оборудованию.",
+                "Контейнеры в режиме bridge не имеют доступа к файловой системе хоста /var/1C/licenses."
+            ],
+            correct: 1,
+            explanation: "Привязка программной лицензии 1С рассчитывает хеш оборудования, куда жестко входит MAC-адрес сетевого интерфейса. Случайный MAC в bridge ломает привязку. Для программных лицензий контейнер необходимо запускать строго в режиме --net=host."
+        },
+        {
+            question: "Почему ни утилита ring (EDT CLI), ни ibcmd не способны собрать файл .cfe напрямую из исходников EDT без создания базы данных?",
+            options: [
+                "Процесс сборки расширения требует обязательного лицензирования HASP, которое не поддерживается автономными утилитами.",
+                "Утилита ring лишь транслирует структуру проекта EDT в XML-схему Конфигуратора, а ibcmd для импорта XML физически требует инициализации файловой СУБД (параметр --data) для сериализации метаданных.",
+                "Платформа 1С блокирует компиляцию любых расширений из командной строки в целях безопасности."
+            ],
+            correct: 1,
+            explanation: "В экосистеме 1С нет концепции изолированного бессерверного компилятора. ring (EDT CLI) только конвертирует формат проекта в XML-выгрузку Конфигуратора. А ibcmd под капотом разворачивает полноценную СУБД на диске для загрузки метаданных перед экспортом бинарного контейнера."
+        },
+        {
+            question: "Как кодировка файла отчета (/Out) платформы 1С может привести к False Success (ложному успеху) в CI/CD пайплайне на Linux?",
+            options: [
+                "Платформа пишет лог только в кодировке UTF-8 с BOM, которую системный шелл bash воспринимает как бинарный файл и завершает пайплайн с кодом 0.",
+                "Платформа может записать отчет в UTF-16LE или CP1251. Окружение GitLab Runner в UTF-8 при обычном поиске через grep не найдет совпадений, и пайплайн завершится успешно, пропустив битый код.",
+                "Сборщик 1С при ошибках кодировки автоматически удаляет лог-файл, что приводит к ложному вердикту 'ошибок нет' из-за отсутствия файла."
+            ],
+            correct: 1,
+            explanation: "Если лог записан в UTF-16LE, grep в UTF-8 окружении не сможет прочитать символы и вернет код 0 (ошибок нет). Пайплайн окрасится в зеленый цвет, скрыв фатальные ошибки компиляции. Перед анализом лог необходимо нормализовать через iconv и sed."
+        },
+        {
+            question: "Какая скрытая угроза кроется во втором рубеже защиты CI/CD — валидации лога на физическое существование и размер, если платформа упала до старта ядра?",
+            options: [
+                "При падении до инициализации ядра (например, отказ СУБД или лицензии) лог-файл создается с нулевым размером. Поиск ошибок в пустом файле вернет статус 'успешно', маскируя падение сборщика.",
+                "Скрипт зависает в бесконечном цикле ожидания, если лог-файл имеет нулевой размер.",
+                "Операционная система Linux автоматически удаляет пустые файлы блокировок, что приводит к порче репозитория Git."
+            ],
+            correct: 0,
+            explanation: "Если лог пуст или отсутствует, проверка на вхождение подстроки 'Ошибка' вернет истину (ошибок нет). Пайплайн посчитает сборку успешной. Для предотвращения этого обязателен жесткий контроль физического размера файла через [[ -s $LOG_FILE ]]."
+        },
+        {
+            question: "Почему вызовы веб- и HTTP-сервисов 1С наиболее подвержены утечкам памяти в rphost при работе со временным хранилищем?",
+            options: [
+                "Платформа при каждом HTTP-запросе дублирует кэш конфигурации в оперативной памяти.",
+                "Сеансы HTTP-сервисов не уничтожаются после возврата ответа, а засыпают в пуле сеансов. Любые данные, помещенные во временное хранилище без UUID формы, остаются в rphost навсегда в ожидании переиспользования сеанса.",
+                "HTTP-соединения используют COM-соединение, которое блокирует сборщик мусора платформы 1С."
+            ],
+            correct: 1,
+            explanation: "Сеансы интеграционных шлюзов пулируются. Метод ПоместитьВоВременноеХранилище(Данные) без указания уникального идентификатора привязывает адрес к жизни сеанса. Поскольку сеанс живет в пуле неограниченно долго, данные зависают в памяти rphost навсегда."
+        },
+        {
+            question: "К какому архитектурному сбою приводит необдуманный вызов метода 'ОбновитьПовторноИспользуемыеЗначения()' в разгар рабочего дня в крупной ERP-системе?",
+            options: [
+                "Полная блокировка таблиц СУБД PostgreSQL из-за монопольной эскалации блокировок кэша.",
+                "Эффект Cache Stampede: мгновенное аннулирование кэша всех сеансов заставляет сотни клиентов одновременно инициировать перерасчет метаданных, вызывая 100% загрузку CPU сервера приложений и паралич системы.",
+                "Мгновенное аварийное завершение всех процессов rphost из-за пробития лимита безопасности."
+            ],
+            correct: 1,
+            explanation: "Сброс повторно используемых значений под высокой нагрузкой лавинообразно вызывает шквал одновременных тяжелых вызовов на перерасчет кэша от всех активных пользователей. Сервер CPU уходит в полку, а пользователи ощущают полную заморозку системы."
+        },
+        {
+            question: "Как встроенный в платформу 1С механизм консолидации рабочих процессов rphost поступает с процессами-перестарками (Stale Processes)?",
+            options: [
+                "Кластер немедленно убивает любой процесс старше 24 часов по SIGKILL, принудительно переключая сеансы.",
+                "Если в течение 20 минут запущены избыточные процессы, кластер пометит наименее загруженный процесс как устаревший, заблокирует новые соединения и предложит старым сеансам мигрировать на активные rphost при первом же серверном вызове, после чего мягко остановит процесс.",
+                "Механизм консолидации отсутствует на Linux, из-за чего ротация процессов возможна только внешними скриптами оркестрации."
+            ],
+            correct: 1,
+            explanation: "Платформа умеет самостоятельно 'схлопывать' лишние процессы. Устаревший процесс перестает получать новые соединения, а активные сеансы плавно переносятся на другие rphost при их очередных обращениях к серверу. После миграции пустой процесс останавливается."
+        },
+        {
+            question: "Какой шаблон POSIX регулярных выражений необходим для надежного поиска ошибок синтаксического контроля в логах 1С на серверах с мультиязычным окружением?",
+            options: [
+                "Достаточно искать слово 'Ошибка' в нижнем регистре.",
+                "Паттерн: 'ошибка|неопознан|ожидается|не определен|несоответств|не найден|неверн|error|expected|undefined|mismatch|not found|invalid|failed'",
+                "Регулярное выражение '[Ее]rror|[Оо]шибка' полностью закрывает все варианты вывода платформы во всех локализациях."
+            ],
+            correct: 1,
+            explanation: "На серверах с английской локалью или при сборке в Docker-контейнерах платформа возвращает ошибки в виде 'Expected', 'Undefined', 'Mismatch' и т.д. Узкий шаблон пропустит дефекты, породив ложный успех сборки."
+        }
+    ];
+
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    const questionTextEl = document.getElementById('question-text');
+    const optionsListEl = document.getElementById('options-list');
+    const feedbackBoxEl = document.getElementById('feedback-box');
+    const nextBtnEl = document.getElementById('next-btn');
+    const progressFillEl = document.getElementById('progress-fill');
+    const progressTextEl = document.getElementById('progress-text');
+    
+    const quizScreenEl = document.getElementById('quiz-screen');
+    const resultScreenEl = document.getElementById('result-screen');
+    const scoreCircleEl = document.getElementById('score-circle');
+    const resultCommentEl = document.getElementById('result-comment');
+    const restartBtnEl = document.getElementById('restart-btn');
+
+    function initQuiz() {
+        currentQuestionIdx = 0;
+        score = 0;
+        quizScreenEl.style.display = 'block';
+        resultScreenEl.style.display = 'none';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        isAnswered = false;
+        nextBtnEl.style.display = 'none';
+        feedbackBoxEl.className = 'feedback-box';
+        feedbackBoxEl.style.display = 'none';
+        
+        const currentQuestion = quizData[currentQuestionIdx];
+        questionTextEl.textContent = `${currentQuestionIdx + 1}. ${currentQuestion.question}`;
+        
+        // Обновление прогресс-бара
+        const progressPercent = (currentQuestionIdx / quizData.length) * 100;
+        progressFillEl.style.width = `${progressPercent}%`;
+        progressTextEl.textContent = `${currentQuestionIdx + 1} / ${quizData.length}`;
+
+        optionsListEl.innerHTML = '';
+        currentQuestion.options.forEach((option, idx) => {
+            const li = document.createElement('li');
+            li.className = 'option-item';
+            
+            const marker = document.createElement('span');
+            marker.className = 'option-marker';
+            marker.textContent = String.fromCharCode(65 + idx); // A, B, C
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = option;
+            textSpan.style.flexGrow = '1';
+            
+            li.appendChild(marker);
+            li.appendChild(textSpan);
+            
+            li.addEventListener('click', () => selectAnswer(idx));
+            optionsListEl.appendChild(li);
+        });
+    }
+
+    function selectAnswer(selectedIdx) {
+        if (isAnswered) return;
+        isAnswered = true;
+
+        const currentQuestion = quizData[currentQuestionIdx];
+        const optionItems = optionsListEl.getElementsByClassName('option-item');
+
+        for (let i = 0; i < optionItems.length; i++) {
+            optionItems[i].classList.add('disabled');
+            if (i === currentQuestion.correct) {
+                optionItems[i].classList.add('correct');
+            }
+        }
+
+        if (selectedIdx === currentQuestion.correct) {
+            score++;
+            feedbackBoxEl.className = 'feedback-box correct';
+            feedbackBoxEl.innerHTML = `<strong>Верно! Системная метрика подтверждена.</strong> <div class="explanation">${currentQuestion.explanation}</div>`;
+        } else {
+            optionItems[selectedIdx].classList.add('wrong');
+            feedbackBoxEl.className = 'feedback-box wrong';
+            feedbackBoxEl.innerHTML = `<strong>Инженерный просчет! Изучите архитектурный разбор.</strong> <div class="explanation">${currentQuestion.explanation}</div>`;
+        }
+
+        feedbackBoxEl.style.display = 'block';
+        nextBtnEl.style.display = 'block';
+    }
+
+    function handleNext() {
+        currentQuestionIdx++;
+        if (currentQuestionIdx < quizData.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        progressFillEl.style.width = '100%';
+        progressTextEl.textContent = `${quizData.length} / ${quizData.length}`;
+        quizScreenEl.style.display = 'none';
+        resultScreenEl.style.display = 'block';
+        
+        scoreCircleEl.textContent = `${score} / ${quizData.length}`;
+        
+        let comment = '';
+        if (score === quizData.length) {
+            comment = '🏆 <strong>Абсолютный триумф!</strong> Вы обладатель чёрного пояса по SRE & DevOps 1С на Linux. Все тонкости компиляции, проброса лицензий, работы с cgroups, кэшированием и мультиязычными логами изучены досконально. Смело идите настраивать высоконагруженные отказоустойчивые enterprise-контуры!';
+        } else if (score >= 8) {
+            comment = '💪 <strong>Прекрасный результат!</strong> Уровень ведущего SRE/DevOps-инженера 1С. Вы отлично понимаете внутренности процессов rphost и rmngr, а также умеете защищать пайплайны сборки от ложных успехов. Пара мелких нюансов — и вы станете непобедимы!';
+        } else if (score >= 5) {
+            comment = '⚡ <strong>Достойный базовый уровень.</strong> Вы уверенно ориентируетесь в Linux-конфигурации кластера 1С, но сложные логические паттерны (вроде ложных успехов с кодировками или путаницы в расчете vmSwap) пока вызывают затруднения. Рекомендуем глубже изучить прикрепленные руководства!';
+        } else {
+            comment = '📚 <strong>Требуется работа над ошибками.</strong> Темы контейнеризации в Docker, OOM-killer на Linux, батчинга тяжелых СУБД-транзакций и разницы между КОРП и ПРОФ являются достаточно сложными. Попробуйте еще раз пройтись по учебным материалам и повторить тест!';
+        }
+        resultCommentEl.innerHTML = comment;
+    }
+
+    nextBtnEl.addEventListener('click', handleNext);
+    restartBtnEl.addEventListener('click', initQuiz);
+
+    initQuiz();
+</script>
+</body>
+</html>
