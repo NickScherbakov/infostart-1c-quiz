@@ -1,14 +1,22 @@
-<div style="max-width:860px;margin:18px auto;line-height:1.65;color:#1f2937;font-size:16px;">
-  <h2 style="margin:0 0 12px 0;font-size:28px;line-height:1.2;color:#0f172a;">Практика через викторину: Linux/SRE/DevOps для 1C</h2>
+<div style="max-width:860px;margin:18px auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:#24292e;font-size:16px;">
+  <div style="background:#f6f8fa;border-left:5px solid #0366d6;padding:16px 20px;margin-bottom:24px;border-radius:0 6px 6px 0;">
+    <h2 style="margin:0 0 10px 0;color:#0366d6;font-size:22px;border:none;padding:0;line-height:1.25;">Практика через викторину: Linux/SRE/DevOps для 1C</h2>
+    <p style="font-size:15px;color:#444d56;margin:0 0 8px 0;font-weight:500;">
+      Материал оформлен как короткий инженерный тренажер. Сначала пройдите тест, затем используйте
+      разбор как чек-лист для ревизии своих CI/CD, контейнеров и кластера 1C.
+    </p>
+    <p style="font-size:13px;color:#586069;margin:0;">
+      <strong>10 вопросов по памяти rphost, Docker-лицензированию, CI/CD и диагностике кластера 1C с быстрым инженерным разбором после каждого ответа</strong>
+    </p>
+  </div>
 
   <p style="margin:0 0 14px 0;">
-    Материал оформлен как короткий инженерный тренажер. Сначала пройдите тест, затем используйте
-    разбор как чек-лист для ревизии своих CI/CD, контейнеров и кластера 1C.
+    Ниже расположен безопасный для публикации на Infostart статичный блок с интерактивной вставкой. Основной контент статьи остается обычным HTML, а сама викторина подключается через внешний iframe с GitHub Pages.
   </p>
 
-  <div style="border:1px solid #e5e7eb;background:#f8fafc;border-radius:10px;padding:14px 16px;margin:0 0 18px 0;">
-    <strong>Что проверяет викторина:</strong>
-    <ul style="margin:8px 0 0 20px;padding:0;">
+  <div style="background:#ffffff;border:1px solid #e1e4e8;border-radius:6px;padding:14px 18px;margin:20px 0;">
+    <strong style="display:block;margin-bottom:8px;color:#24292e;font-size:14px;">Что проверяет викторина:</strong>
+    <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:14px;color:#24292e;">
       <li style="margin:0 0 6px 0;">Контроль памяти rphost под Linux (vmRSS + vmSwap).</li>
       <li style="margin:0 0 6px 0;">Причины отсутствия mdmp при аварийном завершении.</li>
       <li style="margin:0 0 6px 0;">Риски Docker bridge для программных лицензий 1C.</li>
@@ -22,7 +30,7 @@
     </ul>
   </div>
 
-  <h3 style="margin:0 0 10px 0;font-size:22px;line-height:1.25;color:#0f172a;">Интерактивная часть</h3>
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:10px;color:#1b1f23;">Интерактивная часть</h2>
   <p style="margin:0 0 12px 0;">Выполните 10 вопросов. После каждого ответа показывается инженерный комментарий с практическим контекстом.</p>
 
   <div style="max-width:760px;margin:0 auto 10px auto;">
@@ -35,20 +43,21 @@
     </iframe>
   </div>
 
-  <p style="text-align:center;margin:0 0 18px 0;">
+  <p style="text-align:center;margin:0 0 18px 0;font-size:14px;color:#586069;">
     Если тест не отображается, откройте отдельно:
-    <a href="https://nickscherbakov.github.io/infostart-1c-quiz/index.html?v=20260901" target="_blank" rel="noopener">Открыть тест</a>
+    <a href="https://nickscherbakov.github.io/infostart-1c-quiz/index.html?v=20260901" target="_blank" rel="noopener" style="color:#0366d6;text-decoration:none;">Открыть тест</a>
   </p>
 
-  <h3 style="margin:0 0 10px 0;font-size:22px;line-height:1.25;color:#0f172a;">Практический минимум после прохождения</h3>
-  <ol style="margin:0 0 14px 22px;padding:0;">
+  <h2 style="font-size:18px;border-bottom:2px solid #eaecef;padding-bottom:6px;margin-top:30px;margin-bottom:10px;color:#1b1f23;">Практический минимум после прохождения</h2>
+  <ol style="margin:0 0 14px 20px;padding-left:20px;line-height:1.8;font-size:14px;color:#24292e;">
     <li style="margin:0 0 8px 0;">Проверьте лимиты памяти rphost и интерпретацию vmSwap в мониторинге.</li>
     <li style="margin:0 0 8px 0;">Добавьте в CI проверку размера лога и нормализацию кодировки перед grep.</li>
     <li style="margin:0 0 8px 0;">Для контейнеров с программными лицензиями применяйте сетевой режим host.</li>
     <li style="margin:0;">Закрепите единый regex-словарь ошибок для RU/EN окружений.</li>
   </ol>
 
-  <p style="margin:0;">
-    Исходники и страница теста: <a href="https://github.com/NickScherbakov/infostart-1c-quiz" target="_blank" rel="noopener">GitHub-репозиторий</a>.
-  </p>
+  <div style="background-color:#f1f8ff;border:1px solid #c8e1ff;border-left:4px solid #0366d6;border-radius:0 6px 6px 0;padding:12px 16px;margin:16px 0 0 0;">
+    <p style="margin:0 0 6px 0;"><strong>Исходники и публикация:</strong></p>
+    <p style="margin:0;">Страница теста и шаблон для Infostart опубликованы в <a href="https://github.com/NickScherbakov/infostart-1c-quiz" target="_blank" rel="noopener" style="color:#0366d6;text-decoration:none;">GitHub-репозитории</a>.</p>
+  </div>
 </div>
