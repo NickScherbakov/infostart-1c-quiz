@@ -1,0 +1,147 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #24292e;">
+
+  <!-- Вводный блок / Заголовок статьи -->
+  <div style="background: #f6f8fa; border-left: 5px solid #0366d6; padding: 16px 20px; margin-bottom: 24px; border-radius: 0 6px 6px 0;">
+    <h2 style="margin: 0 0 10px 0; color: #0366d6; font-size: 22px; border: none; padding: 0;">Инженерный тест: Linux, DevOps и SRE в экосистеме «1С:Предприятие 8»</h2>
+    <p style="font-size: 15px; color: #444d56; margin: 0 0 8px 0; font-weight: 500;">
+      Интерактивная самопроверка компетенций по проектированию сборочных конвейеров, изоляции раннеров в Docker, низкоуровневой диагностике памяти rphost и безаварийной оркестрации кластера на Linux.
+    </p>
+    <p style="font-size: 13px; color: #586069; margin: 0;">
+      <strong>15 практических вопросов с архитектурным разбором: защита от False Success, тонкости HASP vs *.lic, отладка утечек BSL и ловушки cgroups</strong>
+    </p>
+  </div>
+
+  <p>
+    Перевод инфраструктуры «1С:Предприятия» на Linux и внедрение практик непрерывной интеграции (CI/CD) кардинально меняют требования к компетенциям инженеров. Здесь больше недостаточно стандартных сценариев администрирования через GUI: на первый план выходят понимание нативной C++ архитектуры платформы, системных вызовов ядра Linux, сетевого взаимодействия службы лицензирования и детерминированной сборки конфигураций без графической оболочки.
+  </p>
+  <p>
+    Данная викторина создана как практический срез знаний для тех, кто строит или уже эксплуатирует высоконагруженные контуры 1С на Linux. Она охватывает как типовые ошибки новичков, так и неочевидные подводные камни, приводящие к ночным инцидентам в продакшене.
+  </p>
+
+  <!-- Блок: Для кого этот тест -->
+  <h2 style="font-size: 18px; border-bottom: 2px solid #eaecef; padding-bottom: 6px; margin-top: 30px; margin-bottom: 14px; color: #1b1f23;">Кому будет полезен этот тест</h2>
+  <table style="border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13.5px;">
+    <thead>
+      <tr style="background-color: #f6f8fa;">
+        <th style="border: 1px solid #dcdfe6; padding: 10px 12px; width: 28%; text-align: left; color: #1f2328;">Инженерная роль</th>
+        <th style="border: 1px solid #dcdfe6; padding: 10px 12px; width: 72%; text-align: left; color: #1f2328;">Ключевые точки проверки компетенций</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;"><strong style="color: #0366d6;">DevOps / CI/CD инженеры</strong></td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;">Построение сборочных контейнеров без GUI, обход модальных окон, парсинг логов с BOM-байтами, diff-контроль исходников и предотвращение ложно-зеленых сборок (False Success).</td>
+      </tr>
+      <tr style="background-color: #fcfcfc;">
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;"><strong style="color: #0366d6;">SRE / Системные администраторы Linux</strong></td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;">Корректное монтирование программных лицензий <code>*.lic</code> и аппаратных HASP в Docker, мониторинг реального потребления памяти (RSS + Swap), мягкая ротация «перестарков» через systemd.</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;"><strong style="color: #0366d6;">1C-разработчики и техлиды</strong></td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; vertical-align: top;">Предотвращение утечек оперативной памяти в BSL (кэшируемые модули, пулы сеансов HTTP-сервисов, временные хранилища), батчинг транзакций и профилирование через <code>logcfg.xml</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Блок: Что проверяет викторина -->
+  <h2 style="font-size: 18px; border-bottom: 2px solid #eaecef; padding-bottom: 6px; margin-top: 30px; margin-bottom: 14px; color: #1b1f23;">Что проверяет викторина</h2>
+  <div style="background-color: #ffffff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 14px 18px; margin: 16px 0;">
+    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; font-size: 14px; color: #24292e;">
+      <li><strong>Сборочный конвейер и CLI 1С:</strong> Разница между <code>ring</code> (EDT CLI), <code>ibcmd</code> (автономный сервер) и пакетным режимом <code>1cv8 DESIGNER</code> под виртуальным фреймбуфером <code>Xvfb</code>.</li>
+      <li><strong>5 рубежей обороны от False Success:</strong> Как гарантировать, что ошибка компиляции или нехватка лицензий в headless-режиме не вернет код <code>0</code> в пайплайне сборки.</li>
+      <li><strong>Лицензионный барьер в контейнерах:</strong> Почему <code>docker run --net=bridge</code> уничтожает программную лицензию, как правильно настраивать <code>nethasp.ini</code> и изолировать сборочные раннеры.</li>
+      <li><strong>Анатомия памяти рабочих процессов:</strong> Отличие нативной C++ памяти <code>rphost</code> от JVM/GC, скрытые угрозы Linux Swap и различия в ротации процессов между уровнями лицензий ПРОФ и КОРП.</li>
+      <li><strong>Observability и профилирование:</strong> Настройка фильтров технологического журнала (<code>CALL</code>, <code>SCALL</code>, <code>TLOCK</code>) и понимание ограничений C++ core dumps без PDB-символов вендора.</li>
+    </ul>
+  </div>
+
+  <!-- Блок: Инструкция по прохождению -->
+  <div style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-left: 4px solid #0366d6; border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 18px 0;">
+    <p style="margin: 0 0 6px 0; font-weight: 600; color: #0366d6;">Как проходить тест:</p>
+    <p style="margin: 0; font-size: 13.5px; color: #24292e;">
+      Викторина содержит 15 вопросов с вариантами ответов. Сразу после выбора варианта вы увидите развернутый инженерный комментарий с объяснением физики процесса, ссылками на механизмы ядра Linux и документацию платформы. По итогам прохождения формируется итоговая оценка вашей SRE-готовности.
+    </p>
+  </div>
+
+  <!-- Интерактивный блок с iframe -->
+  <h2 style="font-size: 18px; border-bottom: 2px solid #eaecef; padding-bottom: 6px; margin-top: 30px; margin-bottom: 14px; color: #1b1f23;">Интерактивный тест</h2>
+  <div style="background: #ffffff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 6px; margin: 20px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+    <iframe src="https://nickscherbakov.github.io/infostart-1c-quiz/" width="100%" height="700" style="border: none; border-radius: 4px; width: 100%; display: block;" loading="lazy"></iframe>
+  </div>
+
+  <!-- Резервная ссылка на случай блокировки фрейма -->
+  <div style="background-color: #fffbdd; border: 1px solid #d9d099; border-left: 4px solid #e36209; border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 16px 0;">
+    <strong style="color: #9e4100;">Виджет не загрузился?</strong> Если ваш браузер или корпоративный прокси блокирует сторонние фреймы, откройте тест напрямую в новой вкладке:
+    <a href="https://nickscherbakov.github.io/infostart-1c-quiz/" target="_blank" rel="noopener noreferrer" style="color: #0366d6; font-weight: 600; text-decoration: underline; margin-left: 4px;">Пройти викторину на GitHub Pages ↗</a>
+  </div>
+
+  <!-- Блок: Чек-лист после прохождения -->
+  <h2 style="font-size: 18px; border-bottom: 2px solid #eaecef; padding-bottom: 6px; margin-top: 30px; margin-bottom: 14px; color: #1b1f23;">Практический SRE-чеклист для 1С на Linux</h2>
+  <p>
+    Используйте этот базовый чеклист для аудита надежности вашей текущей инфраструктуры разработки и эксплуатации:
+  </p>
+  <table style="border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13.5px;">
+    <thead>
+      <tr style="background-color: #f6f8fa;">
+        <th style="border: 1px solid #dcdfe6; padding: 10px 12px; width: 25%; text-align: left; color: #1f2328;">Область</th>
+        <th style="border: 1px solid #dcdfe6; padding: 10px 12px; width: 35%; text-align: left; color: #1f2328;">Рискованный паттерн</th>
+        <th style="border: 1px solid #dcdfe6; padding: 10px 12px; width: 40%; text-align: left; color: #1f2328;">Надежное инженерное решение</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; font-weight: 600;">CI/CD логи</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Простой <code>grep "Ошибка"</code> без учета BOM и кодировки лога.</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Конвертация через <code>iconv</code> в UTF-8, срез <code>\xEF\xBB\xBF</code>, валидация размера лога и мультиязычный regex.</td>
+      </tr>
+      <tr style="background-color: #fcfcfc;">
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; font-weight: 600;">HASP в Docker</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Широковещательный поиск ключей через broadcast по подсети.</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Фиксация <code>NH_SERVER_ADDR</code> и параметр <code>NH_USE_BROADCAST = Disabled</code> в <code>nethasp.ini</code>.</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; font-weight: 600;">Лицензии *.lic</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Запуск контейнеров в режиме по умолчанию <code>--net=bridge</code>.</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Запуск со строгим <code>--net=host</code> и монтированием каталога <code>/var/1C/licenses:ro</code> для сохранения MAC-адреса.</td>
+      </tr>
+      <tr style="background-color: #fcfcfc;">
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; font-weight: 600;">Память на ПРОФ</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Попытка ограничить rphost жестким <code>mem_limit</code> в Docker cgroups.</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Отказ от жесткого OOM-килла в пользу внешней ротации через RAS API при нулевых активных соединениях.</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px; font-weight: 600;">Память на КОРП</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Значение <code>--memory-excess-time = 0</code> (ротация фактически отключена).</td>
+        <td style="border: 1px solid #dcdfe6; padding: 10px 12px;">Установка положительного тайм-аута (например, 300 сек) для запуска фонового прогрева замещающего rphost.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Блок: Репозиторий и участие -->
+  <h2 style="font-size: 18px; border-bottom: 2px solid #eaecef; padding-bottom: 6px; margin-top: 30px; margin-bottom: 14px; color: #1b1f23;">Исходный код и участие в развитии проекта</h2>
+  <div style="background-color: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 6px; padding: 16px 20px; margin: 16px 0;">
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #24292e;">
+      Викторина разрабатывается как открытый Open Source проект для русскоязычного инженерного сообщества. Исходный код тестов, логика проверки и база вопросов доступны в публичном репозитории:
+    </p>
+    <p style="margin: 0 0 12px 0;">
+      <a href="https://github.com/NickScherbakov/infostart-1c-quiz" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #0366d6; color: #ffffff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13.5px; font-weight: 600;">
+        Открыть репозиторий NickScherbakov/infostart-1c-quiz на GitHub →
+      </a>
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #586069;">
+      Если вы хотите предложить свой сложный кейс из продакшена, исправить неточность или добавить новый блок вопросов по СУБД PostgreSQL/Linux — создавайте Issue и Pull Request в репозитории.
+    </p>
+  </div>
+
+  <!-- Подвал статьи -->
+  <hr style="border: none; border-top: 1px solid #e1e4e8; margin: 30px 0 20px 0;">
+  <div style="font-size: 13px; color: #586069; background: #fafbfc; border-radius: 6px; padding: 12px 16px;">
+    <p style="margin: 0 0 4px 0;">
+      <em>Интерактивный материал подготовлен для DevOps-инженеров, системных администраторов и архитекторов высоконагруженных систем 1С.</em>
+    </p>
+    <p style="margin: 0;">
+      <strong>Николай Щербаков</strong> &mdash; практический опыт автоматизации, CI/CD и обеспечения отказоустойчивости «1С:Предприятия» на Linux.
+    </p>
+  </div>
+
+</div>
